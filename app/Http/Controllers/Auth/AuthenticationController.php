@@ -103,12 +103,11 @@ class AuthenticationController extends Controller
                     'email' => $user->email,
                     'google_id' => $user->id,
                     'password' => encrypt('123456dummy'),
-                    'avatar'=>$user->avatar_original
+                    'avatar' => $user->avatar_original
                 ]);
                 Auth::login($newUser);
-                
-                return redirect()->intended('dashboard')->with('success','Selamat anda telah terdaftar');
 
+                return redirect()->route('login')->with('success', 'Selamat anda telah terdaftar');
             }
         } catch (Exception $e) {
             dd($e->getMessage());

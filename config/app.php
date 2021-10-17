@@ -106,7 +106,7 @@ return [
     |
     */
 
-    'faker_locale' => 'en_US',
+    'faker_locale' => env('FAKER_LOCAL', 'en_US'),
 
     /*
     |--------------------------------------------------------------------------
@@ -225,7 +225,7 @@ return [
         'Schema' => Illuminate\Support\Facades\Schema::class,
         'Session' => Illuminate\Support\Facades\Session::class,
         // Socialite
-        'Socialite'=>Laravel\Socialite\Facades\Socialite::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'Storage' => Illuminate\Support\Facades\Storage::class,
         'Str' => Illuminate\Support\Str::class,
         'URL' => Illuminate\Support\Facades\URL::class,

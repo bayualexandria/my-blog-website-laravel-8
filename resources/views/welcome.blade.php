@@ -150,10 +150,10 @@
     <div class="container">
         <div class="row justify-content-center text-center">
             <div class="col-md-6">
-                <img src="{{ $user->avatar }}" alt="profile" class="img-fluid rounded-circle border shadow text-bold"
-                    style="width: 40%">
+                <img src="{{ $user->avatar??'' }}" alt="profile"
+                    class="img-fluid rounded-circle border shadow text-bold" style="width: 40%">
                 <div class="pt-2">
-                    <h2 class="text-white font-weight-bold">{{ $user->name }}</h2>
+                    <h2 class="text-white font-weight-bold">{{ $user->name??'' }}</h2>
                     <h6>Web Programming & Computer Networking</h6>
 
                     <a href="https://api.whatsapp.com/send?phone=6281316146399" target="blank" class="btn btn-circle"
@@ -169,7 +169,8 @@
                         <i data-feather="github"></i>
                     </a>
                     <div class="mt-3">
-                        <a href="{{ url('user') }}" class="badge rounded-pill bg-primary text-decoration-none text-white">Look me</a>
+                        <a href="{{ url('user') }}"
+                            class="badge rounded-pill bg-primary text-decoration-none text-white">Look me</a>
                     </div>
                 </div>
             </div>

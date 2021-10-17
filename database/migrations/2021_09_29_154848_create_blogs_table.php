@@ -20,7 +20,7 @@ class CreateBlogsTable extends Migration
             $table->foreignId('user_id');
             $table->string('slug');
             $table->text('body');
-            $table->text('cover');
+            $table->text('cover')->nullable();
             $table->timestamps();
         });
     }

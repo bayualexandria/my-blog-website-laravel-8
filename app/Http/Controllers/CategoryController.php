@@ -19,7 +19,7 @@ class CategoryController extends Controller
 
         return view('backend.category.index', [
             'title' => 'Daftar halaman kategori',
-            'categories' => $categories->paginate(1)->withQueryString()
+            'categories' => $categories->paginate(3)->withQueryString()
         ]);
     }
 

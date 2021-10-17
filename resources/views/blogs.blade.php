@@ -44,7 +44,7 @@
                             <img class="card-img-top img-fluid" src="{{ url('storage/'.$blogs[0]->cover) }}"
                                 alt="Card image cap">
                             <div class="card-body">
-                                <h4 class="card-title text-dark">{{ $blogs[0]->title }} Dasar Pemrograman Web</h4>
+                                <h4 class="card-title text-dark">{{ $blogs[0]->title }}</h4>
                                 <div class="d-flex align-items-center justify-content-center color-main">
                                     <p class="card-text align-items-center" style="font-size: 12px;"> <i
                                             data-feather="user" width="10"></i>&nbsp;
@@ -53,8 +53,8 @@
                                         <a href="{{ url('blogs?category='.$blogs[0]->category->slug) }}"
                                             class="text-decoration-none">{{ $blogs[0]->category->name }}</a>
                                     </p>&nbsp;&nbsp;
-                                    <small class="text-muted"
-                                        style="font-size: 12px;">{{ $blogs[0]->created_at->diffForHumans() }}</small>
+                                    <small class="text-muted" style="font-size: 12px;">{{
+                                        $blogs[0]->created_at->diffForHumans() }}</small>
                                 </div>
                                 <a href="{{ route('detail',$blogs[0]->slug) }}"
                                     class="btn btn-sm btn-primary mt-3">Lihat
@@ -73,14 +73,14 @@
                             <img class="card-img-top img-fluid" src="{{ url('storage/'.$blog->cover) }}"
                                 alt="Card image cap">
                             <div class="card-body">
-                                <h6 class="card-title text-dark">{{ $blog->title }} Dasar Pemrograman Web</h6>
+                                <h6 class="card-title text-dark">{{ $blog->title }}</h6>
                                 <p class="card-text align-items-center color-main" style="font-size: 12px;"> <i
                                         data-feather="user" width="10"></i>&nbsp;
                                     {{ $blog->user->name }}</p>
                                 <div class="d-flex align-items-center justify-content-between color-main">
                                     <p style="font-size: 12px;">{{ $blog->category->name }}</p>
-                                    <small class="text-muted"
-                                        style="font-size: 12px;">{{ $blog->created_at->diffForHumans() }}</small>
+                                    <small class="text-muted" style="font-size: 12px;">{{
+                                        $blog->created_at->diffForHumans() }}</small>
                                 </div>
                                 <a href="{{ route('detail',$blog->slug) }}" class="btn btn-sm btn-primary mt-3">Lihat
                                     selengkapnya</a>
@@ -101,7 +101,7 @@
             </div>
             @endif
 
-            <div class="d-flex justify-content-center align-items-center">
+            <div class="d-flex justify-content-center align-items-center mt-5">
                 {{ $blogs->links() }}
             </div>
 

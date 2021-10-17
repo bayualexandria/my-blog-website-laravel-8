@@ -44,7 +44,7 @@ class BlogController extends Controller
         libxml_clear_errors();
         $images = $dom->getElementsByTagName('img');
         if (!file_exists($storage)) {
-            mkdir($storage, 0700);
+            mkdir($storage, 755, true);
         }
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
@@ -61,12 +61,10 @@ class BlogController extends Controller
                 $img->setAttribute('class', 'img-fluid img-thumbnail');
             }
         }
-        if ($request->file('cover')) {
-            $cover = $request->file('cover')->store('cover-blog');
-        }
+ 
         $blog->create([
             'title' => request('title'),
-            'cover' => $cover,
+            'cover' => ($request->file('cover')) ? $request->file('cover')->store('cover-blog') : '',
             'category_id' => request('category_id'),
             'user_id' => auth()->user()->id,
             'slug' => Str::of(request('title'))->slug('-'),
