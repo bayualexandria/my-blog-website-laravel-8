@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Auth\Events\Registered;
 
 class AuthenticationController extends Controller
 {
@@ -112,5 +115,44 @@ class AuthenticationController extends Controller
         } catch (Exception $e) {
             dd($e->getMessage());
         }
+    }
+
+    public function register()
+    {
+        return view('backend.auth.register', ['title' => 'Halaman Register']);
+    }
+
+    public function attemptRegister(Request $request, User $user)
+    {
+        $request->validate(
+            [
+                'name' => 'required',
+                'email' => 'required|unique:users',
+                'password' => 'required|same:conf_pass|min:6',
+                'conf_pass' => 'required|same:password|min:6'
+            ],
+            [
+                'name.required' => 'Nama harus diisi',
+                'email.required' => 'Email harus diisi',
+                'email.unique' => 'Email yang anda masukkan sudah terdaftar',
+                'password.required' => 'Password harus diisi',
+                'password.same' => 'Password tidak sama',
+                'password.min' => 'Password minimal 6 karakter',
+                'conf_pass.required' => 'Konfirmasi password harus diisi',
+                'conf_pass.same' => 'Konfirmasi password tidak sama',
+                'conf_pass.min' => 'Konfirmasi password minimal 6 karakter',
+            ]
+        );
+
+        $user->create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'api_token' => Str::random(60)
+        ]);
+        event(new Registered($user));
+
+        Auth::login($user);
+        return redirect()->route('login')->with('success', 'Selamat anda berhasil registrasi! Silahkan verifikasi email anda');
     }
 }

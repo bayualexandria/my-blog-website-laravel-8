@@ -10,8 +10,8 @@
                     <div class="card-body">
                         <div class="text-center mb-5">
                             <img src="{{ url('assets/images/web/logo.png') }}" height="48" class='mb-4 rounded-circle'>
-                            <h3>Sign In</h3>
-                            <p>Please sign in to continue to my web.</p>
+                            <h3>Register</h3>
+                            <p>Please register to continue to login.</p>
                         </div>
                         @if (session()->has('error'))
                         <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert">
@@ -41,8 +41,25 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                         @endif
-                        <form action="{{ route('login') }}" method="POST">
+                        <form action="{{ route('register') }}" method="POST">
                             @csrf
+                            <div class="form-group position-relative has-icon-left">
+                                <label for="name">Nama lengkap</label>
+                                <div class="position-relative">
+                                    <input type="text" name="name"
+                                        class="form-control @error('name') is-invalid @enderror" id="name"
+                                        value="{{ old('name') }}">
+                                    <div class="form-control-icon">
+                                        <i data-feather="user"></i>
+                                    </div>
+                                </div>
+                                @error('name')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                                @enderror
+                            </div>
+
                             <div class="form-group position-relative has-icon-left">
                                 <label for="email">Email</label>
                                 <div class="position-relative">
@@ -50,7 +67,7 @@
                                         class="form-control @error('email') is-invalid @enderror" id="email"
                                         value="{{ old('email') }}">
                                     <div class="form-control-icon">
-                                        <i data-feather="user"></i>
+                                        <i data-feather="mail"></i>
                                     </div>
                                 </div>
                                 @error('email')
@@ -59,16 +76,12 @@
                                 </small>
                                 @enderror
                             </div>
+
                             <div class="form-group position-relative has-icon-left">
-                                <div class="clearfix">
-                                    <label for="password">Password</label>
-                                    <a href="auth-forgot-password.html" class='float-end'>
-                                        <small>Forgot password?</small>
-                                    </a>
-                                </div>
+                                <label for="password">Password</label>
                                 <div class="position-relative">
                                     <input type="password" name="password"
-                                        class="form-control @error('email') is-invalid @enderror" id="password">
+                                        class="form-control @error('password') is-invalid @enderror" id="password">
                                     <div class="form-control-icon">
                                         <i data-feather="lock"></i>
                                     </div>
@@ -79,37 +92,33 @@
                                 </small>
                                 @enderror
                             </div>
-                            <div class='form-check clearfix my-4'>
-                                <div class="checkbox float-start">
-                                    <input type="checkbox" id="checkbox1" class='form-check-input' name="remember_me">
-                                    <label for="checkbox1">Remember me</label>
+
+                            <div class="form-group position-relative has-icon-left">
+                                <label for="conf_pass">Konfirmasi password</label>
+                                <div class="position-relative">
+                                    <input type="password" name="conf_pass"
+                                        class="form-control @error('conf_pass') is-invalid @enderror" id="conf_pass">
+                                    <div class="form-control-icon">
+                                        <i data-feather="lock"></i>
+                                    </div>
                                 </div>
+                                @error('conf_pass')
+                                <small class="text-danger">
+                                    {{ $message }}
+                                </small>
+                                @enderror
                             </div>
 
+                            <small>
+                                <a href="{{ route('login') }}">Has been acount? back to login page</a>
+                            </small>
+
                             <div class="clearfix">
-                                <button class="btn btn-primary float-end" type="submit">Submit</button>
+                                <button class="btn btn-primary float-end" type="submit">Register</button>
                             </div>
                         </form>
 
-                        <div class="row text-center justify-content-center mt-3">
-                            <div class="col-md-10">
-                                <a href="{{ route('register') }}" class="btn btn-sm btn-primary"><i data-feather="codesandbox"></i> Register</a>
-                            </div>
-                        </div>
-                        <div class="divider">
-                            <div class="divider-text">OR</div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <button class="btn btn-block mb-2 btn-primary"><i data-feather="facebook"></i>
-                                    Facebook</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <a href="{{ route('google-redirect') }}" class="btn btn-block mb-2 btn-danger"><i
-                                        class="fab fa-google"></i>
-                                    Google</a>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>

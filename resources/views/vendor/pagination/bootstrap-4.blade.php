@@ -26,7 +26,6 @@
                             <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
                         @else
                             <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
-                            <?php if($loop->count > 2) break; ?>
                         @endif
                     @endforeach
                 @endif

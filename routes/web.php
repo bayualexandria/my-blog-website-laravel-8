@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // FrontEnd
+
 Route::get('/', function () {
     return view('welcome', [
         'title' => 'Halaman Utama',
@@ -71,15 +73,20 @@ Route::get('/about', function () {
 
 
 // BackEnd
-Route::middleware(['guest'])->group(function () {
-    Route::get('/login', [AuthenticationController::class, 'login'])->name('login');
-});
+
+Route::get('/login', [AuthenticationController::class, 'login'])->name('login');
+Route::get('/register', [AuthenticationController::class, 'register'])->name('register');
+
 Route::post('/login', [AuthenticationController::class, 'attemptLogin'])->name('login');
+Route::post('/register', [AuthenticationController::class, 'attemptRegister'])->name('register');
+// Auth::routes(['verify' => true]);
 Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
 Route::get('/redirect', [AuthenticationController::class, 'redirectToProvider'])->name('google-redirect');
 Route::get('/callback', [AuthenticationController::class, 'handleProviderCallback']);
 
-Route::middleware(['auth'])->group(function () {
+Auth::routes(['verify' => true]);
+
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {
         return view('backend.home', [
             'title' => 'Halaman Dashboard',
@@ -113,4 +120,9 @@ Route::middleware(['auth'])->group(function () {
         'update'
     ])->name('editCategory');
     Route::delete('/category/{category:slug}', [CategoryController::class, 'delete'])->name('deleteCategory');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 });
+
+
+
+
