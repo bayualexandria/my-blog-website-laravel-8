@@ -1,13 +1,12 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticationController;
+use App\Http\Controllers\Auth\{AuthenticationController, VerifyController};
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Blog;
 use App\Models\Category;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,19 +73,69 @@ Route::get('/about', function () {
 
 // BackEnd
 
-Route::get('/login', [AuthenticationController::class, 'login'])->name('login');
-Route::get('/register', [AuthenticationController::class, 'register'])->name('register');
+// Login
+Route::get('/login', [
+    AuthenticationController::class,
+    'login'
+])->name('login');
+Route::post('/login', [
+    AuthenticationController::class,
+    'attemptLogin'
+])->name('login');
 
-Route::post('/login', [AuthenticationController::class, 'attemptLogin'])->name('login');
-Route::post('/register', [AuthenticationController::class, 'attemptRegister'])->name('register');
-// Auth::routes(['verify' => true]);
-Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
-Route::get('/redirect', [AuthenticationController::class, 'redirectToProvider'])->name('google-redirect');
-Route::get('/callback', [AuthenticationController::class, 'handleProviderCallback']);
+// Register
+Route::get('/register', [
+    AuthenticationController::class,
+    'register'
+])->name('register');
+Route::post('/register', [
+    AuthenticationController::class,
+    'attemptRegister'
+])->name('register');
 
-Auth::routes(['verify' => true]);
+// Verification email
+Route::get('/email/verify', [
+    VerifyController::class,
+    'index'
+])->middleware('auth')
+    ->name('verification.notice');
+Route::post('/email/verification-notification', [
+    VerifyController::class,
+    'send'
+])
+    ->middleware([
+        'auth',
+        'throttle:6,1'
+    ])->name('verification.send');
+Route::get('/email/verify/{id}/{hash}', [
+    VerifyController::class,
+    'verify'
+])->middleware([
+    'auth',
+    'signed'
+])->name('verification.verify');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+// Logout
+Route::post('/logout', [
+    AuthenticationController::class,
+    'logout'
+])->name('logout');
+
+// Authentication google account
+Route::get('/redirect', [
+    AuthenticationController::class,
+    'redirectToProvider'
+])->name('google-redirect');
+Route::get('/callback', [
+    AuthenticationController::class,
+    'handleProviderCallback'
+]);
+
+Route::middleware([
+    'auth',
+    'verified'
+])->group(function () {
+    // Dashboard
     Route::get('/dashboard', function () {
         return view('backend.home', [
             'title' => 'Halaman Dashboard',
@@ -94,19 +143,48 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'categories' => Category::all()
         ]);
     })->name('dashboard');
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-    Route::post('/profile', [ProfileController::class, 'profile'])->name('profile');
-    Route::post('/password', [ProfileController::class, 'password'])->name('password');
 
-    Route::get('/blog', [BlogController::class, 'index'])->name('blog');
-    Route::post('/blog', [BlogController::class, 'save'])->name('blog');
-    Route::get('/blog/{blog:slug}', [BlogController::class, 'edit'])->name('editBlog');
-    Route::put('/blog/{blog:slug}', [BlogController::class, 'update'])->name('editBlog');
-    Route::delete('/blog/{blog:slug}', [BlogController::class, 'delete'])->name('deleteBlog');
+    // Profile
+    Route::get('/profile', [
+        ProfileController::class,
+        'index'
+    ])->name('profile');
+    Route::post('/profile', [
+        ProfileController::class,
+        'profile'
+    ])->name('profile');
+    Route::post('/password', [
+        ProfileController::class,
+        'password'
+    ])->name('password');
 
-    Route::get('/category', [CategoryController::class, 'index'])->name(
-        'category'
-    );
+    // Blogs
+    Route::get('/blog', [
+        BlogController::class,
+        'index'
+    ])->name('blog');
+    Route::post('/blog', [
+        BlogController::class,
+        'save'
+    ])->name('blog');
+    Route::get('/blog/{blog:slug}', [
+        BlogController::class,
+        'edit'
+    ])->name('editBlog');
+    Route::put('/blog/{blog:slug}', [
+        BlogController::class,
+        'update'
+    ])->name('editBlog');
+    Route::delete('/blog/{blog:slug}', [
+        BlogController::class,
+        'delete'
+    ])->name('deleteBlog');
+
+    // Category
+    Route::get('/category', [
+        CategoryController::class,
+        'index'
+    ])->name('category');
     Route::post('/category', [
         CategoryController::class,
         'save'
@@ -119,10 +197,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         CategoryController::class,
         'update'
     ])->name('editCategory');
-    Route::delete('/category/{category:slug}', [CategoryController::class, 'delete'])->name('deleteCategory');
-    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::delete('/category/{category:slug}', [
+        CategoryController::class,
+        'delete'
+    ])->name('deleteCategory');
 });
-
-
-
-

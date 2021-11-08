@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,21 +26,28 @@ class AuthenticationController extends Controller
     {
         $credentials = $request->validate(
             [
-                'email' => 'required',
+                'email' => 'required|email',
                 'password' => 'required'
             ],
             [
                 'email.required' => 'Email harus diisi',
+                'email.email' => 'Yang anda masukan bukan email',
                 'password.required' => 'Password harus diisi'
             ]
         );
-
-
-        if (Auth::attempt($credentials, $request->remember_me)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            if ($user->email_verified_at!=null) {      
+                if (Auth::attempt($credentials, $request->remember_me)) {
+                    $request->session()->regenerate();
+                    return redirect()->intended(RouteServiceProvider::HOME);
+                }
+                return back()->with('error', 'Password yang anda masukan salah!');
+            }
+            return redirect()->to('/email/verify');
         }
-        return back()->with('error', 'Email atau password yang anda masukan salah!');
+            return back()->with('error', 'Email yang anda masukan belum terdaftar!');
+       
     }
 
     public function logout(Request $request)
@@ -144,15 +152,16 @@ class AuthenticationController extends Controller
             ]
         );
 
-        $user->create([
+        $users = $user->create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'api_token' => Str::random(60)
         ]);
-        event(new Registered($user));
+        event(new Registered($users));
 
-        Auth::login($user);
-        return redirect()->route('login')->with('success', 'Selamat anda berhasil registrasi! Silahkan verifikasi email anda');
+        $users->sendEmailVerificationNotification();
+
+        return redirect()->to('/login')->with('success', 'Selamat anda berhasil registrasi! Silahkan verifikasi email anda');
     }
 }

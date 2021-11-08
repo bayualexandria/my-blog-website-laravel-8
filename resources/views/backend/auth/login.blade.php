@@ -62,7 +62,7 @@
                             <div class="form-group position-relative has-icon-left">
                                 <div class="clearfix">
                                     <label for="password">Password</label>
-                                    <a href="auth-forgot-password.html" class='float-end'>
+                                    <a href="{{ route('password.request') }}" class='float-end'>
                                         <small>Forgot password?</small>
                                     </a>
                                 </div>
