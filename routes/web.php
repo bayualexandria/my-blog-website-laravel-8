@@ -1,6 +1,10 @@
 <?php
 
-use App\Http\Controllers\Auth\{AuthenticationController, VerifyController};
+use App\Http\Controllers\Auth\{
+    AuthenticationController,
+    ResetPassword,
+    VerifyController
+};
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
@@ -114,6 +118,31 @@ Route::get('/email/verify/{id}/{hash}', [
     'auth',
     'signed'
 ])->name('verification.verify');
+
+// Reset Password
+Route::get('/forgot-password', [
+    ResetPassword::class,
+    'index'
+])->middleware('guest')
+    ->name('password.request');
+Route::post('/forgot-password', [
+    ResetPassword::class,
+    'verify'
+])->middleware('guest')
+    ->name('password.email');
+Route::get(
+    '/reset-password/{token}',
+    [
+        ResetPassword::class,
+        'show'
+    ]
+)->middleware('guest')
+    ->name('password.reset');
+Route::post('/reset-password', [
+    ResetPassword::class,
+    'reset'
+])->middleware('guest')
+    ->name('password.update');
 
 // Logout
 Route::post('/logout', [
